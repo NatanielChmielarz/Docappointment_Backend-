@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from patient.models import Patient,Disease_history
 from django.contrib.auth.hashers import make_password
+from user_app.models import User
 class PatientSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(style={'input_type': 'password'}, write_only=True)
 
@@ -20,15 +21,16 @@ class PatientSerializer(serializers.ModelSerializer):
         if Patient.objects.filter(email=validated_data.get("email")).exists():
             raise serializers.ValidationError({'error': 'Email already exists'})
         password = make_password(validated_data['password'])
+       
         return Patient.objects.create(
-            
+            email=validated_data.get("email"),
+            password=password,
             first_name=validated_data.get("first_name"),
             last_name=validated_data.get("last_name"),
             phone_no=validated_data.get("phone_no"),
-            email=validated_data.get("email"),
-            password=password
+            
         )
 class Disease_history_Serializer(serializers.ModelSerializer):
     class Meta:
         model=Disease_history
-        fields= '__all__'
+        exclude=('Patient',)

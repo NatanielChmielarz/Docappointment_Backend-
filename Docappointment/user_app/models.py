@@ -13,8 +13,9 @@ class UserManager(BaseUserManager):
             email= self.normalize_email(email),
            
         )
-        user.is_active=True
+        
         user.set_password(password)
+       
         user.save(using=self._db)
         return user
     def create_staffuser(self, email, password=None):
@@ -22,7 +23,7 @@ class UserManager(BaseUserManager):
              password=password
      )
      user.is_staff = True
-     user.is_active=True
+    
      user.save(using=self._db)
      
      return user
@@ -31,7 +32,7 @@ class UserManager(BaseUserManager):
                 password=password
                 
         )
-        user.is_active=True
+       
         user.is_staff = True
         user.is_admin = True
         user.is_superuser = True
@@ -47,7 +48,7 @@ class User(AbstractBaseUser):
     created_date = models.DateTimeField(auto_now=True)
     modified_date = models.DateTimeField(auto_now=True)
     is_staff = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
     is_superadmin = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
     USERNAME_FIELD='email'

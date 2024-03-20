@@ -8,4 +8,5 @@ urlpatterns = [
     path('account/',include('user_app.api.urls')),
     path('specialization/',include('specialization.api.urls')),
     
+    
 ]
