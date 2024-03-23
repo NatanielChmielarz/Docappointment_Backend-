@@ -43,7 +43,8 @@ INSTALLED_APPS = [
      'user_app',
      'specialization',
      'patient',
-     'specialist'
+     'specialist',
+     'medical_facility'
      
 ]
 

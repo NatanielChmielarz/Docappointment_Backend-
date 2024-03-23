@@ -10,7 +10,9 @@ from specialist.models import (Specialist,Education,TreatedDisease,
                                Foreign_Languagese,Consultation_Scope,
                                Visit_Type,Reviews)
 from django.forms import ValidationError
-from .permision import SpecialistOrReadOnly
+from .permision import SpecialistOrReadOnly,ReviewUserOrReadOnly
+from rest_framework.permissions import IsAuthenticated
+from patient.models import Patient
 # Create your views here.
 class SpecialistSignupAPIView(APIView):
     permission_classes = []
@@ -37,3 +39,118 @@ class Specialist_Profile(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = Specialist_Serializer
     lookup_field='id'
     permission_classes = [SpecialistOrReadOnly]
+    
+    
+class Education_CreateView(generics.CreateAPIView):
+    serializer_class = Education_Serializer
+    permission_classes = [SpecialistOrReadOnly]
+    def get_queryset(self):
+        return Education.objects.all()
+    def perform_create(self, serializer):
+        id = self.kwargs['id']
+        specialist= Specialist.objects.get(id=id)
+       
+        serializer.save(specialist=specialist)
+    
+class Education_DetailsView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Education.objects.all()
+    serializer_class = Education_Serializer
+    lookup_field='id'
+    permission_classes = [SpecialistOrReadOnly]
+
+class TreatedDisease_CreateView(generics.CreateAPIView):
+    queryset = TreatedDisease.objects.all()
+    schema = Treated_Disease_Serializer
+    permission_classes = [SpecialistOrReadOnly]
+    def perform_create(self, serializer):
+        id = self.kwargs['id']
+        specialist= Specialist.objects.get(id=id)
+       
+        serializer.save(specialist=specialist)
+    
+class TreatedDisease_DetailsView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = TreatedDisease.objects.all()
+    serializer_class = Treated_Disease_Serializer
+    lookup_field='id'
+    permission_classes = [SpecialistOrReadOnly]
+    
+class ForeignLanguage_CreateView(generics.CreateAPIView):
+    queryset = Foreign_Languagese.objects.all()
+    serializer_class = Foreign_Language_Serializer
+    permission_classes = [SpecialistOrReadOnly]
+    def perform_create(self, serializer):
+        id = self.kwargs['id']
+        specialist= Specialist.objects.get(id=id)
+       
+        serializer.save(specialist=specialist)
+    
+class ForeignLaguage_DetailsView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Foreign_Languagese.objects.all()
+    serializer_class = Foreign_Language_Serializer
+    lookup_field='id'
+    permission_classes = [SpecialistOrReadOnly]
+    
+class ConsultationScope_CreateView(generics.CreateAPIView):
+    queryset = Consultation_Scope.objects.all()
+    serializer_class = Consultation_Scope_Serializer
+    permission_classes = [SpecialistOrReadOnly]
+    def perform_create(self, serializer):
+        id = self.kwargs['id']
+        specialist= Specialist.objects.get(id=id)
+       
+        serializer.save(specialist=specialist)
+    
+class ConsultationScope_DetailsView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Consultation_Scope.objects.all()
+    serializer_class = Consultation_Scope_Serializer
+    lookup_field='id'
+    permission_classes = [SpecialistOrReadOnly]
+    
+class VisitType_CreateView(generics.CreateAPIView):
+    queryset = Visit_Type.objects.all()
+    serializer_class = Visit_Type_Serializer
+    permission_classes = [SpecialistOrReadOnly]
+    def perform_create(self, serializer):
+        id = self.kwargs['id']
+        specialist= Specialist.objects.get(id=id)
+       
+        serializer.save(specialist=specialist)
+class VisitType_DetailsView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Visit_Type.objects.all()
+    serializer_class = Visit_Type_Serializer
+    lookup_field='id'
+    permission_classes = [SpecialistOrReadOnly]
+    
+
+class Reviews_ListView(generics.ListAPIView):
+    serializer_class = Reviews_Serializer  
+    permission_classes = [IsAuthenticated]
+    def get_queryset(self):
+        id = self.kwargs['id']
+        return Reviews.objects.filter(specialist=id)    
+    
+class Reviews_CreateView(generics.CreateAPIView):
+    serializer_class = Reviews_Serializer
+    permission_classes=[IsAuthenticated]
+    def get_queryset(self):
+        return Reviews.objects.all()
+    def perform_create(self, serializer):
+        id = self.kwargs['id']
+        Specialist_= Specialist.objects.get(id=id)
+        review_user = Patient.objects.get(id=self.request.user.id)
+        review_queryset = Reviews.objects.filter(specialist=Specialist_,review_user=review_user) 
+        if review_queryset.exists():
+            raise ValidationError("You have already reviewed this Specialist_")
+        if Specialist_.number_rating == 0:
+            Specialist_.avg_rating = serializer.validated_data['rating']
+        else:
+            Specialist_.avg_rating = (Specialist_.avg_rating*Specialist_.number_rating + serializer.validated_data['rating'])/2
+        
+        Specialist_.number_rating = Specialist_.number_rating + 1
+        Specialist_.save()
+        serializer.save(specialist=Specialist_,review_user=review_user)
+class Reviews_DetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Reviews.objects.all()
+    serializer_class = Reviews_Serializer  
+    lookup_field='id'
+    permission_classes = [ReviewUserOrReadOnly]

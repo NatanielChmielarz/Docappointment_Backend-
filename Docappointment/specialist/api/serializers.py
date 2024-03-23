@@ -38,32 +38,32 @@ class Specialist_SignUp_Serializer(serializers.ModelSerializer):
 class Education_Serializer(serializers.ModelSerializer):
     class Meta:
         model=Education
-        field='__all__'
+        exclude=('specialist',)
         
 
 class Treated_Disease_Serializer(serializers.ModelSerializer):
     class Meta:
         model = TreatedDisease
-        fields = '__all__'
+        exclude=('specialist',)
 
 class Foreign_Language_Serializer(serializers.ModelSerializer):
     class Meta:
         model = Foreign_Languagese
-        fields = '__all__'
+        exclude=('specialist',)
 
 class Consultation_Scope_Serializer(serializers.ModelSerializer):
     class Meta:
         model = Consultation_Scope
-        fields = '__all__'
+        exclude=('specialist',)
 
 class Visit_Type_Serializer(serializers.ModelSerializer):
     class Meta:
         model = Visit_Type
-        fields = '__all__'
+        exclude=('specialist',)
 
 
 class Reviews_Serializer(serializers.ModelSerializer):
-    review_user = serializers.StringRelatedField(read_only=True)
+    review_user = serializers.PrimaryKeyRelatedField(read_only=True)
     class Meta:
         model = Reviews
         exclude = ('specialist',)        
@@ -75,9 +75,10 @@ class Specialist_Serializer(serializers.ModelSerializer):
     specialist_consultation_scope=Consultation_Scope_Serializer(many=True,read_only=True)
     specialist_visit_type=Visit_Type_Serializer(many=True,read_only=True)
     specialist_reviews=Reviews_Serializer(many=True,read_only=True)
+    main_specialization= serializers.StringRelatedField(read_only=True)
     class Meta:
         model = Specialist
         fields = ["first_name", "last_name", "email","phone_no","photo_no",
                   "specialist_education","specialist_treed_disease",
                   "specialist_foreign_languages","specialist_consultation_scope",
-                  "specialist_visit_type","specialist_reviews"]
+                  "specialist_visit_type",'main_specialization',"specialist_reviews",'avg_rating','number_rating']

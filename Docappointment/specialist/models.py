@@ -8,11 +8,13 @@ class Specialist(User):
     first_name = models.CharField(max_length = 50)
     last_name = models.CharField(max_length = 50)
     phone_no = models.CharField(max_length =9)
-    main_specialization = models.ForeignKey(specialization,on_delete=models.CASCADE)
+    main_specialization = models.ForeignKey(specialization,on_delete=models.CASCADE,related_name='specialist_specializations')
     about_me = models.TextField(blank=True)
     photo_no = models.CharField(max_length =100,blank=True)
+    avg_rating = models.FloatField(default=0,blank=True)
+    number_rating = models.IntegerField(default=0,blank=True)
     def __str__(self):
-        return self.first_name +'' + self.last_name
+        return self.first_name +' ' + self.last_name
 #wyksztalcenie
 class Education(models.Model):
     specialist = models.ForeignKey(Specialist, on_delete=models.CASCADE,related_name="specialist_education")
@@ -41,7 +43,7 @@ class Reviews(models.Model):
     specialist = models.ForeignKey(Specialist, on_delete=models.CASCADE,related_name="specialist_reviews")
     review_user = models.ForeignKey(Patient, on_delete=models.CASCADE)
     rating = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
-    description = models.CharField(max_length=200,null=True)
+    description = models.CharField(max_length=200)
     active = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
