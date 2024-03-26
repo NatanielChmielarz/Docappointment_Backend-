@@ -12,21 +12,22 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 import datetime
 from pathlib import Path
-
+import os 
+from dotenv import load_dotenv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+load_dotenv()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-l3b5$wj&3vd5x9+c+qc@!!j7+v(jrvdw5j^s^*!1i5yrrqtg7='
+SECRET_KEY =  os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DEBUG")  == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
 
 
 # Application definition
@@ -85,11 +86,14 @@ WSGI_APPLICATION = 'Docappointment.wsgi.application'
 DATABASES = {
    'default': {
        'ENGINE': 'django.db.backends.postgresql',
-       'NAME': 'Docapointment',
-       'USER': 'postgres',
-       'PASSWORD': 'Superadm',
-       'HOST': 'localhost',
-       'PORT': '5432',
+        'NAME': os.getenv('POSTGRES_DATABASE'),
+        'USER': os.getenv('POSTGRES_USER'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+        'HOST': os.getenv('POSTGRES_HOST'),
+        'PORT': os.getenv('POSTGRES_DB_PORT'),
+        # 'OPTIONS': {
+        #     'sslmode': 'require',
+        # },
    }
 }
 
