@@ -4,11 +4,11 @@ from rest_framework.views import Response
 from rest_framework.views import status
 from .serializers import (Specialist_SignUp_Serializer,Specialist_Serializer,Education_Serializer,Treated_Disease_Serializer,
                           Foreign_Language_Serializer,Consultation_Scope_Serializer,
-                          Visit_Type_Serializer,Reviews_Serializer)
+                          Visit_Type_Serializer,Reviews_Serializer,SlotCreateUpdateSerializer)
 from rest_framework import generics
 from specialist.models import (Specialist,Education,TreatedDisease,
                                Foreign_Languagese,Consultation_Scope,
-                               Visit_Type,Reviews)
+                               Visit_Type,Reviews,SpecialistSlots)
 from django.forms import ValidationError
 from .permision import SpecialistOrReadOnly,ReviewUserOrReadOnly
 from rest_framework.permissions import IsAuthenticated
@@ -154,3 +154,17 @@ class Reviews_DetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = Reviews_Serializer  
     lookup_field='id'
     permission_classes = [ReviewUserOrReadOnly]
+    
+class Slot_CreateView(generics.CreateAPIView):
+    
+     serializer_class = SlotCreateUpdateSerializer
+     def perform_create(self, serializer):
+        id = self.kwargs['id']
+        Specialist_= Specialist.objects.get(id=id)
+        serializer.save(specialist=Specialist_)
+class Slot_DetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = SpecialistSlots.objects.all()
+    serializer_class =SlotCreateUpdateSerializer 
+    lookup_field='id'
+    permision_classes = [SpecialistOrReadOnly]
+   

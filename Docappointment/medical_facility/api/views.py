@@ -33,7 +33,6 @@ class CreateMedicalFacility(generics.CreateAPIView):
             return Response({'error': 'Passwords do not match'}, status=status.HTTP_400_BAD_REQUEST)
         
         
-        admin=MedicalFacilityAdminSerializer.create(email=admin_email, password=password_hash)
         password_hash = make_password(password)
         admin = MedicalFacilityAdmin.objects.create(email=admin_email, password=password_hash)
 
