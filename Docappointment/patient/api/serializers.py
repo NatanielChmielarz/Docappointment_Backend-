@@ -1,7 +1,9 @@
 from rest_framework import serializers
-from patient.models import Patient,Disease_history
+from patient.models import Patient,Disease_history,VisitReservation
 from django.contrib.auth.hashers import make_password
 from user_app.models import User
+from specialist.api.serializers import SlotDisplaySerializer
+from specialist.models import SpecialistSlots
 class PatientSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(style={'input_type': 'password'}, write_only=True)
 
@@ -34,3 +36,18 @@ class Disease_history_Serializer(serializers.ModelSerializer):
     class Meta:
         model=Disease_history
         exclude=('Patient',)
+        
+class VisitReservation_Display_Serializer(serializers.ModelSerializer):
+    reservation_info = SlotDisplaySerializer(read_only=True)
+    class Meta:
+        model= VisitReservation
+        exclude= ('Patient',)
+        
+class VisitReservation_Details_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model= VisitReservation
+        exclude= ('Patient',)
+   
+
+        
+        

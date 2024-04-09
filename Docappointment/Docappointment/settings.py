@@ -45,7 +45,10 @@ INSTALLED_APPS = [
      'specialization',
      'patient',
      'specialist',
-     'medical_facility'
+     'medical_facility',
+     'rest_framework_swagger',
+    'drf_yasg',
+    'django_filters',
      
 ]
 
@@ -118,7 +121,9 @@ AUTH_PASSWORD_VALIDATORS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES':     ('rest_framework.permissions.IsAuthenticated',),
-    'DEFAULT_AUTHENTICATION_CLASSES': ('rest_framework_simplejwt.authentication.JWTAuthentication',)
+    'DEFAULT_AUTHENTICATION_CLASSES': ('rest_framework_simplejwt.authentication.JWTAuthentication',),
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+    
 }
 SIMPLE_JWT = {
      'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes=30),

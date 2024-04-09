@@ -23,6 +23,12 @@ class Medical_Facility_Serializer(serializers.ModelSerializer):
                     specialist_url = request.build_absolute_uri(f'/account/Specialist/{specialist.id}')
                     specialist_dict.setdefault(specialization_name, []).append((specialist.__str__(), specialist_url))
         return specialist_dict
+class Medical_Facility_Location_Serializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = MedicalFacility
+        fields = ["name", "address", "city"]    
+        
 class MedicalFacilityAdminSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(style={'input_style':'password'},write_only=True)
     class Meta:

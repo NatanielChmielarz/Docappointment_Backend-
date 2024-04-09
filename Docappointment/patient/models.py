@@ -19,3 +19,7 @@ class Disease_history(models.Model):
     def __str__(self):
         return self.diseanse
     
+class VisitReservation(models.Model):
+    Patient = models.ForeignKey(Patient,on_delete=models.CASCADE,related_name="patient_visit_reservation")
+    reservation_info = models.ForeignKey('specialist.SpecialistSlots', on_delete=models.CASCADE,related_name="ReservationInfo") 
+    

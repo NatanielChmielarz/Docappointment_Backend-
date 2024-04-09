@@ -13,6 +13,10 @@ from django.forms import ValidationError
 from .permision import SpecialistOrReadOnly,ReviewUserOrReadOnly
 from rest_framework.permissions import IsAuthenticated
 from patient.models import Patient
+from rest_framework.decorators import api_view
+import django_filters.rest_framework
+from rest_framework import filters
+from django_filters.rest_framework import DjangoFilterBackend
 # Create your views here.
 class SpecialistSignupAPIView(APIView):
     permission_classes = []
@@ -40,6 +44,13 @@ class Specialist_Profile(generics.RetrieveUpdateDestroyAPIView):
     lookup_field='id'
     permission_classes = [SpecialistOrReadOnly]
     
+class Specialist_list(generics.ListAPIView):
+    queryset = Specialist.objects.all()
+    serializer_class = Specialist_Serializer
+    permission_classes = [SpecialistOrReadOnly]    
+    filter_backends = [filters.SearchFilter]
+    filterset_fields = ['main_specialization', 'specialist_facilities']
+    search_fields =  ['main_specialization', 'specialist_facilities']
     
 class Education_CreateView(generics.CreateAPIView):
     serializer_class = Education_Serializer
@@ -60,7 +71,7 @@ class Education_DetailsView(generics.RetrieveUpdateDestroyAPIView):
 
 class TreatedDisease_CreateView(generics.CreateAPIView):
     queryset = TreatedDisease.objects.all()
-    schema = Treated_Disease_Serializer
+    serializer_class= Treated_Disease_Serializer
     permission_classes = [SpecialistOrReadOnly]
     def perform_create(self, serializer):
         id = self.kwargs['id']
@@ -163,8 +174,9 @@ class Slot_CreateView(generics.CreateAPIView):
         Specialist_= Specialist.objects.get(id=id)
         serializer.save(specialist=Specialist_)
 class Slot_DetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = SpecialistSlots.objects.all()
     serializer_class =SlotCreateUpdateSerializer 
     lookup_field='id'
     permision_classes = [SpecialistOrReadOnly]
-   
+    def get_queryset(self):
+        return SpecialistSlots.objects.filter(id=self.kwargs['id'],is_active=True)
+    

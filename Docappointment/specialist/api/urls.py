@@ -4,10 +4,11 @@ from .views import (SpecialistSignupAPIView,Specialist_Profile,Education_CreateV
                     ForeignLanguage_CreateView,ForeignLaguage_DetailsView,
                     ConsultationScope_CreateView,ConsultationScope_DetailsView,
                     VisitType_CreateView,VisitType_DetailsView,Reviews_ListView,
-                    Reviews_CreateView,Reviews_DetailView,Slot_CreateView,Slot_DetailView)
+                    Reviews_CreateView,Reviews_DetailView,Slot_CreateView,Slot_DetailView,Specialist_list)
 urlpatterns = [
     path('register/',SpecialistSignupAPIView.as_view(),name='register account'),
     path('<int:id>',Specialist_Profile.as_view(), name='specialist_details'),
+    path('List',Specialist_list.as_view(), name='list'),
     path('<int:id>/education-create',Education_CreateView.as_view() ),
     path('education/<int:id>',Education_DetailsView.as_view() ),
     path('<int:id>/TreatedDisease-create',TreatedDisease_CreateView.as_view() ),
@@ -23,6 +24,5 @@ urlpatterns = [
     path('Reviews/<int:id>', Reviews_DetailView.as_view() ),
     path('<int:id>/Slot-create',Slot_CreateView.as_view() ),
     path('Slot/<int:id>',Slot_DetailView.as_view() ),
-    
     
 ]

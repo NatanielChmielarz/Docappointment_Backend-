@@ -62,7 +62,7 @@ class SpecialistSlots(models.Model):
     duration_minutes = models.IntegerField(validators=[MinValueValidator(1)])
     active = models.BooleanField(blank=True, default=True)
     def __str__(self):
-        return f"{self.specialist.first_name} {self.specialist.last_name} - {self.visit_type.name} - {self.date_time}"
+        return f"{self.specialist.first_name} {self.specialist.last_name} - {self.visit_type.visit_type_name} - {self.date_time}"
 
     def clean(self):
         if self.address not in self.specialist.medical_facilities.all():
